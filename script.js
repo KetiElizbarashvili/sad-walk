@@ -42,3 +42,45 @@ const hdrEquirect = new RGBELoader()
     
   hdrEquirect.mapping = THREE.EquirectangularReflectionMapping;
 });
+
+// USE THE HDR AS THE SCENE'S ENVIRONMENT
+scene.environment = hdrEquirect;
+
+// CREATE CAMERA AND SET POSITION
+var camera = new THREE.PerspectiveCamera( 45, window.innerWidth/window.innerHeight, 0.1, 1000 );
+
+// CAMERA POSITION ONLY WORKS IF IT ISN'T OVERWRITTEN BY THE ANIMATION (RIGHT NOW IT DOESN'T HAVE AN EFFECT)
+camera.position.z = 20;
+camera.position.y = 40;
+
+// MATERIAL FOR THE BLOB WHICH USES THE HDR TO GET IT'S COLOUR THROUGH REFLECTIONS
+var blob_mat = new THREE.MeshPhysicalMaterial({
+  
+  // WHITE COLOUR TO GET MORE REFLECTIONS
+  color: 0xffffff,
+  
+  // ROUGHNESS TO GIVE THE MATERIAL A SOFT PLASTIC LOOK
+  roughness: 0.3,
+  
+  // NO MATELNESS IN ORDER NOT TO MAKE THE MATERIAL TO SHINY
+  metalness: 0,
+  
+  // USE THE HDR AS THE ENVIRONMENT MAP
+  envMap: hdrEquirect,
+  
+  // DECLARE HOW MUCH OF AN EFFECT THE HDR HAS ON THE MATERIAL
+  envMapIntensity: 0.5
+});
+
+// UNI MATERIAL FOR THE EYES - THE EMISSIVENESS MAKES THAT THE MATERIAL DOESN'T REACT TO OTHER LIGHTS
+var uni_mat = new THREE.MeshPhysicalMaterial({
+// USE THE HDR AS THE ENVIRONMENT MAP
+envMap: hdrEquirect,
+  
+// BUT MAKE IT HAVE NO IMPACT ON THE MATERIAL
+envMapIntensity: 0,
+
+// SET THE EMSSIVE COLOUR TO THE BACKGROUND COLOUR SO THAT IT BLENDS IN
+emissive: 0x11151c
+});
+
